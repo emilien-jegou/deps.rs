@@ -16,11 +16,13 @@ pub struct ManagedIndex {
 }
 
 impl ManagedIndex {
-    pub fn new() -> Self {
+    pub fn try_new() -> anyhow::Result<Self> {
         // the index path is configurable through the `CARGO_HOME` env variable
-        let index = Arc::new(Mutex::new(Some(GitIndex::new_cargo_default().unwrap())));
+        let index = Arc::new(Mutex::new(Some(
+            GitIndex::new_cargo_default().context("failed to initialize crates.io index")?,
+        )));
 
-        Self { index }
+        Ok(Self { index })
     }
 
     pub fn crate_(&self, crate_name: CrateName) -> Option<Crate> {

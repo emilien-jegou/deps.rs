@@ -8,6 +8,7 @@ use actix_web::{
     web::{self, ThinData},
 };
 use actix_web_lab::middleware::NormalizePath;
+use anyhow::Context;
 use reqwest::redirect::Policy as RedirectPolicy;
 
 mod engine;
@@ -57,7 +58,9 @@ async fn main() {
         .parse()
         .expect("could not read port");
 
-    let index = ManagedIndex::new();
+    let index = ManagedIndex::try_new()
+        .context("failed to initialize ManagedIndex")
+        .unwrap();
 
     {
         let index = index.clone();
