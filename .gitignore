@@ -7,3 +7,5 @@
 
 # local environment variables
 .env
+.devenv
+.direnv
